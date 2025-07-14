@@ -1,47 +1,91 @@
 # Performance Lighthouse Runner 🚦
 
 
-## Commands
-FE
-```
-npm run dev
-```
-BE
+### 🛠️ Getting Started
+
+Prerequisites
+
+- Node.js v18+ installed
+- npm or yarn
+
+Backend Setup
 ```
 cd backend
+npm install
+```
+
+Optional: increase heap if you run many repeats
+```
+export NODE_OPTIONS="--max-old-space-size=4096"
+```
+
+```
 node index.js
 ```
+
+The backend listens on port 3001 and exposes:
+
+GET /run-lighthouse-stream SSE endpoint with query params:
+
+url (string), runs (int), mode (Desktop|Mobile), network (desktop,fast3g,slow3g,none)
+
+Frontend Setup
+```
+cd frontend
+npm install
+npm run dev
+```
+
+The Vue dev server runs on 5173 and serves the UI.
 
 A **Vue 3** web application to automate **Google Lighthouse audits** for multiple URLs — with advanced features for running tests in batches, averaging results, retrying failed runs, exporting reports, and comparing historical performance data.
 
 ---
 
-## ✨ Features
+## 🚀 Features
 
-- 📂 **Upload** URLs from `.xlsx` or `.xml` files, or paste them manually.
-- 🔢 **Configure runs:** Set how many Lighthouse runs to execute per URL.
-- 🔄 **Auto-retry:** Automatically re-run failed audits to reach a full set of successful results for accurate averages.
-- 📊 **Visualize results:** View per-URL averages, min/max scores, and interactive charts.
-- 📋 **Export & share:** Copy results as Markdown (for Confluence/Jira) or download detailed reports in Excel.
-- 📈 **Compare runs:** Upload previous results to compare performance trends side-by-side with charts and diffs.
+
+Device emulation: Test in Desktop or Mobile (emulated) modes.
+
+Network throttling: Choose presets (No Throttle, Fast 3G, Slow 3G) for realistic conditions.
+
+Real-time progress: SSE-based progress bar (Run 3 / 10) without client-side polling.
+
+Result visualization:
+
+Dynamic ResultsTable listing each run’s metrics.
+
+Averages component showing FCP, LCP, TBT, SI, CLS, TTI SRT.
+
+MetricsChart and ComparisonChart powered by Chart.js.
+
+---
+
+### Coming soon
+
+Multi-URL & XML import: Paste newline‑separated URLs or upload an XML sitemap.
+
+Multi-run averaging: Run any URL 1‑N times for stable, averaged Lighthouse scores.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** Vue 3, Vite, Element Plus, Tailwind CSS
-- **Data parsing:** SheetJS (`xlsx`), `xml2js`
+- **Frontend:** Vue 3, Vite, Tailwind CSS.
+- **Data parsing:** papaparse (`csv`).
 - **Charts:** Chart.js (`vue-chartjs`)
-- **Clipboard:** `clipboard.js` for easy copy to Markdown
-- **Backend:** Node.js, Express, Puppeteer, Lighthouse CLI (planned)
+- **Backend:** Node.js, Express, Lighthouse CLI (planned)
 
 ---
 
 ## 📌 Project Goals
 
 ✅ Simplify running **Lighthouse audits** for teams.
+
 ✅ Automate **batch runs** for more reliable metrics.
+
 ✅ Make it easy to **share results** with non-technical stakeholders.
+
 ✅ Provide **side-by-side comparisons** for performance regressions.
 
 ---
@@ -57,64 +101,16 @@ Core goals:
 
 ---
 
+🤝 Contributing
+
+- Fork the repo.
+- Create a feature branch (git checkout -b feat/YourFeature).
+- Commit your changes (git commit -m "feat: ...").
+- Push to branch (git push origin feat/YourFeature).
+- Open a Pull Request.
+
+----
+
 ## 📄 License
 
 [MIT](LICENSE)
-
----
-
-## 🤝 Contributions
-
-PRs welcome! Ideas, suggestions, and feedback are highly appreciated.
-
----
-
-## How the FE and BE works
-
-┌──────────────────────────────┐
-│         User's Browser       │
-│──────────────────────────────│
-│  🧑‍💻 Vue 3 Frontend App       │
-│  - Vite                      │
-│  - Tailwind CSS              │
-│  - Element Plus (UI)         │
-│  - Vue Router                │
-│                              │
-│  👇                          │
-│  Calls API: /run-lighthouse  │
-└───────────────┬──────────────┘
-                │  HTTPS Request (JSON)
-                ▼
-┌───────────────────────────────────────────────┐
-│           Node.js Backend Server              │
-│────────────────────────────────────────────── │
-│  🟢 Express.js                                 │
-│  - Defines route POST /run-lighthouse         │
-│  - Validates input (URL, runs, title, mode)   │
-│                                               │
-│  ┌─────────────┐                               │
-│  │ Lighthouse  │                              │
-│  │ (npm pkg)   │                              │
-│  └─────────────┘                               │
-│    ⬇                                            │
-│  🟢 chrome-launcher or puppeteer-core           │
-│  - Spins up headless Chrome                    │
-│  - Runs Lighthouse audit                      │
-│  - Collects JSON reports                      │
-│                                               │
-│  🟢 (Optional) Worker queue                    │
-│  - If running multiple URLs / big runs        │
-│  - Helps retry failed runs                    │
-│                                               │
-│  📄 Generates final result JSON                │
-│                                               │
-│  ✅ Sends JSON back to frontend                │
-└───────────────┬───────────────────────────────┘
-                │
-                ▼
-┌──────────────────────────────┐
-│   Vue Frontend Receives JSON │
-│  - Shows result table/chart  │
-│  - Lets user copy Markdown   │
-│  - Lets user download Excel  │
-└──────────────────────────────┘
