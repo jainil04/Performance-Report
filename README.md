@@ -59,6 +59,18 @@ Averages component showing FCP, LCP, TBT, SI, CLS, TTI SRT.
 
 MetricsChart and ComparisonChart powered by Chart.js.
 
+## Performance Test form
+
+![Performance Test form](image.png)
+
+## Performance Test Result in Table
+
+![Performance Test Result in Table](image-1.png)
+
+## Average of Performance Test Results in Chart
+
+![Average of Performance Test Results in Chart](image-2.png)
+
 ---
 
 ### Coming soon
@@ -66,6 +78,8 @@ MetricsChart and ComparisonChart powered by Chart.js.
 Multi-URL & XML import: Paste newline‑separated URLs or upload an XML sitemap.
 
 Multi-run averaging: Run any URL 1‑N times for stable, averaged Lighthouse scores.
+
+Add more details of the each run in the test.
 
 ---
 
