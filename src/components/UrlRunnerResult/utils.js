@@ -7,7 +7,7 @@ const AUDIT_KEYS = {
   fcp: 'first-contentful-paint',
   lcp: 'largest-contentful-paint',
   tbt: 'total-blocking-time',
-  si:  'speed-index',
+  si: 'speed-index',
   cls: 'cumulative-layout-shift',
   tti: 'interactive',
   srt: 'server-response-time'
@@ -17,7 +17,7 @@ const LABELS = {
   fcp: 'FCP',
   lcp: 'LCP',
   tbt: 'TBT',
-  si:  'SI',
+  si: 'SI',
   cls: 'CLS',
   tti: 'TTI',
   srt: 'SRT'

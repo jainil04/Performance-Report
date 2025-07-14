@@ -6,7 +6,8 @@
       <table class="min-w-full text-left">
         <ResultsTableHead :device="device" :throttle="throttle" @download-csv="downloadCSV" />
         <tbody>
-          <tr v-for="(row, idx) in result" :key="idx" class="border-b border-gray-100 hover:bg-[#fff7d1] cursor-pointer">
+          <tr v-for="(row, idx) in result" :key="idx"
+            class="border-b border-gray-100 hover:bg-[#fff7d1] cursor-pointer">
             <td class="py-3 px-4 font-medium text-gray-900">{{ idx + 1 }}</td>
             <td class="py-3 px-4 font-medium text-gray-900">{{ device }}</td>
             <td class="py-3 px-4 font-medium text-gray-900">{{ getDomain(row.requestedUrl) }}</td>

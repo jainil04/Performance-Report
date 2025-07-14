@@ -18,14 +18,10 @@
             </p>
           </div>
         </div>
-        <CompareCsvChart :fileResults="rawResults"/>
+        <CompareCsvChart :fileResults="rawResults" />
       </div>
     </div>
-      <CompareCsvResultTable
-        v-for="(result, idx) in rawResults"
-        :key="idx"
-        :result="result"
-      />
+    <CompareCsvResultTable v-for="(result, idx) in rawResults" :key="idx" :result="result" />
   </div>
 </template>
 

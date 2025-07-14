@@ -1,11 +1,9 @@
 <template>
-<!-- w-[70%] -->
-<!-- border border-t-0 border-[#999999] dark:border-[#ffffff] rounded-b-[15px] -->
-  <nav
-    class="fixed top-0 left-1/2 -translate-x-1/2 w-full
+  <!-- w-[70%] -->
+  <!-- border border-t-0 border-[#999999] dark:border-[#ffffff] rounded-b-[15px] -->
+  <nav class="fixed top-0 left-1/2 -translate-x-1/2 w-full
       flex items-center px-8 py-4 z-50
-      backdrop-blur-md shadow-md"
-  >
+      backdrop-blur-md shadow-md">
     <!-- Logo / Brand (optional) -->
     <div class="logo text-xl font-bold select-none cursor-none">Lighthouse Test</div>
 
@@ -35,10 +33,12 @@ import { navLinks as links } from "./navLinks.js";
       transform: translateY(-100%);
       opacity: 0;
     }
+
     to {
       transform: translateY(0);
       opacity: 1;
     }
+
     /* from {
       transform: translateY(-20%);
       opacity: 0;
@@ -76,11 +76,10 @@ import { navLinks as links } from "./navLinks.js";
     0% {
       left: -30%;
     }
+
     100% {
       left: 100%;
     }
   }
 }
-
-
 </style>

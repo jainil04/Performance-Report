@@ -16,25 +16,17 @@
         </caption>
         <thead>
           <tr class="border-b border-gray-100 text-gray-500 text-sm">
-            <th
-              v-for= "(metric, index) in Object.keys(result.data[0])"
-              :key="index"
-              class="py-2 px-4 font-semibold"
-            >
+            <th v-for="(metric, index) in Object.keys(result.data[0])" :key="index" class="py-2 px-4 font-semibold">
               {{ metric }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            class="border-b border-gray-100 hover:bg-[#fff7d1] cursor-pointer">
-            <td
-              v-for= "(metricVal, index) in Object.values(result.data[0])"
-              :key="index"
-              class="py-3 px-4 font-medium text-gray-900"
-            >
-            {{ metricVal }}
-          </td>
+          <tr class="border-b border-gray-100 hover:bg-[#fff7d1] cursor-pointer">
+            <td v-for="(metricVal, index) in Object.values(result.data[0])" :key="index"
+              class="py-3 px-4 font-medium text-gray-900">
+              {{ metricVal }}
+            </td>
           </tr>
         </tbody>
       </table>

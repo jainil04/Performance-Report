@@ -12,11 +12,11 @@
       </div>
       <button
         class="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#ffee9d] text-gray-900 font-semibold text-base hover:bg-[#ffe14e] shadow transition cursor-pointer"
-        @click="$emit('download-csv')"
-      >
+        @click="$emit('download-csv')">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17l4 4 4-4m-4-5v9" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7" />
         </svg>
         Export CSV
       </button>

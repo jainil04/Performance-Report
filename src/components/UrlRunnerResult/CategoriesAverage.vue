@@ -18,7 +18,8 @@
     <div class="mt-2 w-full flex flex-col items-center justify-center mb-8">
       <p class="text-gray-500 text-base text-center mb-2">Values are estimated and may vary. The <a
           href="https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/?utm_source=lighthouse&utm_medium=devtools"
-          class="text-blue-400 underline" target="_blank" rel="noopener noreferrer">performance score is calculated</a> directly from these metrics. <a
+          class="text-blue-400 underline" target="_blank" rel="noopener noreferrer">performance score is calculated</a>
+        directly from these metrics. <a
           href="https://googlechrome.github.io/lighthouse/scorecalc/#FCP=1106&LCP=5281&TBT=2797&CLS=0.03&SI=3506&TTI=10143&device=desktop&version=12.6.0"
           class="text-blue-400 underline" target="_blank" rel="noopener noreferrer">See calculator.</a></p>
       <div class="flex gap-8 items-center justify-center mt-2">

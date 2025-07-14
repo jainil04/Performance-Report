@@ -25,7 +25,7 @@ function runOnce(url, options) {
         try {
           resolve(JSON.parse(output))
         } catch (e) {
-          reject(e)
+          reject("Error from runOnce:", e)
         }
       } else {
         reject(new Error(`LHR child exited with code ${code}`))
@@ -67,6 +67,63 @@ app.post("/run-lighthouse", async (req, res) => {
     }
   }
   res.json(results);
+});
+
+app.get("/run-lighthouse-stream", async (req, res) => {
+  const {
+    mode,
+    network,
+    runs = 1,
+    url,
+  } = req.query;
+
+  if (!url) {
+    res.writeHead(400, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      "Access-Control-Allow-Origin": "*"
+    });
+    res.write(`event: error\ndata: ${JSON.stringify({ error: "Missing URL." })}\n\n`);
+    res.end();
+    return;
+  }
+
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+    "Access-Control-Allow-Origin": "*"
+  });
+
+  const emit = (event, data) => {
+    res.write(`event: ${event}\n`);
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  };
+
+  const results = [];
+  const commonOptions = {
+    emulatedFormFactor: mode === 'Mobile' ? 'mobile' : 'desktop',
+    throttlingMethod: 'provided',
+    onlyCategories: ['performance','accessibility','seo'],
+    output: 'json',
+    throttling: getThrottlingProfile(network)
+  };
+
+  for (let i = 0; i < runs; i++) {
+    try {
+      const lhr = await runOnce(url, commonOptions);
+      results.push(lhr);
+      emit("progress", { completed: i + 1, total: runs });
+    } catch (err) {
+      console.error('Run failed:', err);
+      results.push(null);
+      emit("progress", { completed: i + 1, total: runs, error: true });
+    }
+  }
+
+  emit("complete", results);
+  res.end();
 });
 
 app.listen(3001, () => {
