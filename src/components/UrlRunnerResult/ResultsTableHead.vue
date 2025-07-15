@@ -5,7 +5,7 @@
         <h2 class="text-2xl font-bold mb-1 text-gray-900">Test Results</h2>
         <p class="mt-1 text-sm font-normal text-gray-500">
           This table displays the results of the Lighthouse audits for the specified
-          URL, including metrics like FCP, LCP, TBT, SI, CLS, TTI, and SRT for each run.
+          URL, including metrics like {{ Object.values(LABELS).join(", ") }} for each run.
           <br />
           <b>Device: </b>{{ device }} <b> Throttle: </b>{{ throttle }}
         </p>
@@ -24,27 +24,25 @@
   </caption>
   <thead>
     <tr class="border-b border-gray-100 text-gray-500 text-sm">
-      <th class="py-2 px-4 font-semibold">Run</th>
-      <th class="py-2 px-4 font-semibold">Device</th>
-      <th class="py-2 px-4 font-semibold">URL</th>
-      <th class="py-2 px-4 font-semibold">Throttling</th>
-      <th class="py-2 px-4 font-semibold">Timestamp</th>
-      <th class="py-2 px-4 font-semibold">FCP</th>
-      <th class="py-2 px-4 font-semibold">LCP</th>
-      <th class="py-2 px-4 font-semibold">TTI</th>
-      <th class="py-2 px-4 font-semibold">CLS</th>
-      <th class="py-2 px-4 font-semibold">SI</th>
-      <th class="py-2 px-4 font-semibold">TBT</th>
-      <th class="py-2 px-4 font-semibold">SRT</th>
+      <th v-for="(label, index) in labels" :key="index" class="py-2 px-4 font-semibold">{{ label }}</th>
     </tr>
   </thead>
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { LABELS } from './utils.js';
+
 const props = defineProps({
   device: { type: String, required: false },
   throttle: { type: String, required: false },
 });
 
 const emit = defineEmits(['download-csv']);
+
+// Computed property that combines fixed column headers with LABELS
+const labels = computed(() => {
+  const fixedLabels = ['Run', 'Device', 'URL', 'Throttling', 'Timestamp'];
+  return [...fixedLabels, ...Object.values(LABELS)];
+});
 </script>

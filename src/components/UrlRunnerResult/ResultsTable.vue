@@ -1,84 +1,43 @@
 <template>
   <div class="bg-[#fffceb] rounded-2xl shadow border border-[#fff599] p-6 w-full mx-auto">
-    <!-- <h2 class="text-2xl font-bold mb-1 text-gray-900">Test Results</h2>
-    <p class="text-gray-500 mb-6 text-sm">Click on any row to view detailed audit information</p> -->
     <div class="overflow-x-auto">
       <table class="min-w-full text-left">
         <ResultsTableHead :device="device" :throttle="throttle" @download-csv="downloadCSV" />
         <tbody>
           <tr v-for="(row, idx) in result" :key="idx"
-            class="border-b border-gray-100 hover:bg-[#fff7d1] cursor-pointer">
+            class="border-b border-gray-100 hover:bg-[#fff7d1] cursor-pointer"
+            @click="openModal(row, idx)">
             <td class="py-3 px-4 font-medium text-gray-900">{{ idx + 1 }}</td>
             <td class="py-3 px-4 font-medium text-gray-900">{{ device }}</td>
             <td class="py-3 px-4 font-medium text-gray-900">{{ getDomain(row.requestedUrl) }}</td>
             <td class="py-3 px-4 font-medium text-gray-900">{{ throttle }}</td>
             <td class="py-3 px-4">{{ formatTimestamp(row.fetchTime) }}</td>
-            <td class="py-3 px-4">
-              <div class="flex flex-col items-start gap-1">
-                <span>{{ row.audits["first-contentful-paint"].displayValue }}</span>
-                <span :class="scorePillClass(row.audits['first-contentful-paint'].score * 100)">
-                  {{ (row.audits["first-contentful-paint"].score * 100).toFixed(0) }}
-                </span>
-              </div>
-            </td>
-            <td class="py-3 px-4">
-              <div class="flex flex-col items-start gap-1">
-                <span>{{ row.audits["largest-contentful-paint"].displayValue }}</span>
-                <span :class="scorePillClass(row.audits['largest-contentful-paint'].score * 100)">
-                  {{ (row.audits["largest-contentful-paint"].score * 100).toFixed(0) }}
-                </span>
-              </div>
-            </td>
-            <td class="py-3 px-4">
-              <div class="flex flex-col items-start gap-1">
-                <span>{{ row.audits["interactive"].displayValue }}</span>
-                <span :class="scorePillClass(row.audits['interactive'].score * 100)">
-                  {{ (row.audits["interactive"].score * 100).toFixed(0) }}
-                </span>
-              </div>
-            </td>
-            <td class="py-3 px-4">
-              <div class="flex flex-col items-start gap-1">
-                <span>{{ row.audits["cumulative-layout-shift"].displayValue }}</span>
-                <span :class="scorePillClass(row.audits['cumulative-layout-shift'].score * 100)">
-                  {{ (row.audits["cumulative-layout-shift"].score * 100).toFixed(0) }}
-                </span>
-              </div>
-            </td>
-            <td class="py-3 px-4">
-              <div class="flex flex-col items-start gap-1">
-                <span>{{ row.audits["speed-index"].displayValue }}</span>
-                <span :class="scorePillClass(row.audits['speed-index'].score * 100)">
-                  {{ (row.audits["speed-index"].score * 100).toFixed(0) }}
-                </span>
-              </div>
-            </td>
-            <td class="py-3 px-4">
-              <div class="flex flex-col items-start gap-1">
-                <span>{{ row.audits["total-blocking-time"].displayValue }}</span>
-                <span :class="scorePillClass(row.audits['total-blocking-time'].score * 100)">
-                  {{ (row.audits["total-blocking-time"].score * 100).toFixed(0) }}
-                </span>
-              </div>
-            </td>
-            <td class="py-3 px-4">
-              <div class="flex flex-col items-start gap-1">
-                <span>{{ (row.audits["server-response-time"].numericValue / 1000).toFixed(2) }}s</span>
-                <span :class="scorePillClass(row.audits['server-response-time'].score * 100)">
-                  {{ (row.audits["server-response-time"].score * 100).toFixed(0) }}
-                </span>
-              </div>
-            </td>
+            <!-- Dynamically generate metric cells using AUDIT_KEYS -->
+            <template v-for="(auditId, key) in AUDIT_KEYS" :key="key">
+              <td class="py-3 px-4">
+                <div class="flex flex-col items-start gap-1">
+                  <span v-if="key === 'srt'">{{ (row.audits[auditId]?.numericValue / 1000).toFixed(2) }}s</span>
+                  <span v-else>{{ row.audits[auditId]?.displayValue }}</span>
+                  <span :class="scorePillClass(row.audits[auditId]?.score * 100)">
+                    {{ (row.audits[auditId]?.score * 100).toFixed(0) }}
+                  </span>
+                </div>
+              </td>
+            </template>
           </tr>
         </tbody>
       </table>
     </div>
+    <RunDetailsModal :show="showModal" :data="selectedRow" @close="closeModal" />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { defineProps } from 'vue';
+import { AUDIT_KEYS, LABELS } from './utils.js';
 import ResultsTableHead from './ResultsTableHead.vue';
+import RunDetailsModal from './RunDetailsModal.vue';
 
 
 const props = defineProps({
@@ -87,6 +46,19 @@ const props = defineProps({
   device: { type: String, required: false },
   throttle: { type: String, required: false },
 });
+
+const showModal = ref(false);
+const selectedRow = ref(null);
+
+function openModal(row, idx) {
+  selectedRow.value = row;
+  showModal.value = true;
+}
+
+function closeModal() {
+  showModal.value = false;
+  selectedRow.value = null;
+}
 
 function scorePillClass(score) {
   if (score >= 90) return 'inline-block px-3 py-1 rounded-full bg-green-500 text-white font-bold text-sm';
@@ -102,27 +74,39 @@ function formatTimestamp(ts) {
 
 function downloadCSV() {
   if (!props.result || !props.result.length) return;
-  // const caption = [
-  //   '# This table displays the results of the Lighthouse audits for the specified URL, including metrics like FCP, LCP, TBT, SI, CLS, TTI, and SRT for each run.',
-  //   `# Device: ${props.device || 'Desktop'} Throttle: ${props.throttle || 'Simulated Slow 4G'}`
-  // ];
+
+  // Create headers using the LABELS constant
   const headers = [
-    'Run', 'Device', 'URL', 'Throttling', 'Timestamp', 'FCP', 'LCP', 'TTI', 'CLS', 'SI', 'TBT', 'SRT'
+    'Run', 'Device', 'URL', 'Throttling', 'Timestamp',
+    ...Object.values(LABELS) // Add all metric labels from our constants
   ];
-  const rows = props.result.map((row, idx) => [
-    idx + 1,
-    props.device,
-    row.requestedUrl?.split("?")[0],
-    props.throttle,
-    row.fetchTime,
-    row.audits["first-contentful-paint"].displayValue,
-    row.audits["largest-contentful-paint"].displayValue,
-    row.audits["interactive"].displayValue,
-    row.audits["cumulative-layout-shift"].displayValue,
-    row.audits["speed-index"].displayValue,
-    getFormattedTbt(row.audits["total-blocking-time"].displayValue),
-    (row.audits["server-response-time"].numericValue / 1000).toFixed(2) + 's',
-  ]);
+
+  const rows = props.result.map((row, idx) => {
+    // Start with basic information
+    const baseData = [
+      idx + 1,
+      props.device,
+      row.requestedUrl?.split("?")[0],
+      props.throttle,
+      row.fetchTime,
+    ];
+
+    // Add metrics data using AUDIT_KEYS for consistent ordering
+    const metricData = Object.keys(AUDIT_KEYS).map(key => {
+      const auditId = AUDIT_KEYS[key];
+      const audit = row.audits[auditId];
+
+      // Handle edge cases safely with optional chaining
+      if (key === 'srt' && audit?.numericValue) {
+        return (audit.numericValue / 1000).toFixed(2) + 's';
+      } else if (key === 'tbt' && audit?.displayValue) {
+        return getFormattedTbt(audit.displayValue);
+      }
+      return audit?.displayValue || 'N/A';
+    });
+
+    return [...baseData, ...metricData];
+  });
   const csvContent = [
     // ...caption,
     // '', // blank line for separation

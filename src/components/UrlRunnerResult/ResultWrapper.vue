@@ -16,7 +16,7 @@
             </h2>
             <p class="mt-1 text-sm text-left font-normal text-gray-500">
               This chart shows an average of the Lighthouse audits for all the runs,
-              including metrics like FCP, LCP, TBT, SI, CLS, TTI, and SRT.
+              including metrics like {{ Object.values(LABELS).join(", ") }}.
               <br />
               <b>Device: </b>{{ mode }} <b> Throttle: </b>{{ throttle }}
             </p>
@@ -30,7 +30,7 @@
 
 <script setup>
 import { computed } from "vue";
-import { getAverageMetrics } from "./utils.js";
+import { getAverageMetrics, AUDIT_KEYS, LABELS } from "./utils.js";
 
 import ResultsTable from "./ResultsTable.vue";
 import MetricsChart from "./MetricsChart.vue";
@@ -80,33 +80,30 @@ const average = computed(() => {
 
 const scoresAverage = computed(() => {
   const { runs } = props;
-  const scores = {
-    fcp: 0,
-    lcp: 0,
-    tbt: 0,
-    si: 0,
-    cls: 0,
-    tti: 0,
-    srt: 0,
-  };
+
+  // Initialize scores object using keys from AUDIT_KEYS
+  const scores = Object.keys(AUDIT_KEYS).reduce((acc, key) => {
+    acc[key] = 0;
+    return acc;
+  }, {});
+
   props.rawResults.forEach((r) => {
     if (r) {
-      scores.fcp += r.audits["first-contentful-paint"].score * 100;
-      scores.lcp += r.audits["largest-contentful-paint"].score * 100;
-      scores.tbt += r.audits["total-blocking-time"].score * 100;
-      scores.si += r.audits["speed-index"].score * 100;
-      scores.cls += r.audits["cumulative-layout-shift"].score * 100;
-      scores.tti += r.audits.interactive.score * 100;
-      scores.srt += r.audits["server-response-time"].score * 100;
+      // Use AUDIT_KEYS to access audit scores
+      Object.keys(AUDIT_KEYS).forEach(key => {
+        const auditId = AUDIT_KEYS[key];
+        if (r.audits[auditId]?.score) {
+          scores[key] += r.audits[auditId].score * 100;
+        }
+      });
     }
   });
-  scores.fcp = Math.round(scores.fcp / runs);
-  scores.lcp = Math.round(scores.lcp / runs);
-  scores.tbt = Math.round(scores.tbt / runs);
-  scores.si = Math.round(scores.si / runs);
-  scores.cls = Math.round(scores.cls / runs);
-  scores.tti = Math.round(scores.tti / runs);
-  scores.srt = Math.round(scores.srt / runs);
+
+  // Calculate averages
+  Object.keys(scores).forEach(key => {
+    scores[key] = Math.round(scores[key] / runs);
+  });
+
   return scores;
 });
 

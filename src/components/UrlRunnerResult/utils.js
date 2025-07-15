@@ -3,7 +3,7 @@
 /**
  * Maps shorthand keys to Lighthouse audit IDs and labels
  */
-const AUDIT_KEYS = {
+export const AUDIT_KEYS = {
   fcp: 'first-contentful-paint',
   lcp: 'largest-contentful-paint',
   tbt: 'total-blocking-time',
@@ -13,7 +13,7 @@ const AUDIT_KEYS = {
   srt: 'server-response-time'
 };
 
-const LABELS = {
+export const LABELS = {
   fcp: 'FCP',
   lcp: 'LCP',
   tbt: 'TBT',
