@@ -27,9 +27,10 @@
               Throttling</label>
             <select id="throttle" v-model="throttle"
               class="mb-4 w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#fff599] text-gray-900 bg-[#fffceb]">
-              <option>No Throttling</option>
-              <option>Simulated Slow 4G</option>
-              <option>Simulated Fast 3G</option>
+              <option value="none">No Throttling</option>
+              <option value="slow3g">Simulated Slow 3G</option>
+              <option value="fast3g">Simulated Fast 3G</option>
+              <option value="lte">LTE</option>
             </select>
 
             <!-- Number of Runs -->
@@ -93,7 +94,7 @@ import ResultWrapper from "../components/UrlRunnerResult/ResultWrapper.vue";
 
 const url = ref('');
 const device = ref('Desktop');
-const throttle = ref('No Throttling');
+const throttle = ref('none');
 const runs = ref(1);
 const result = ref([]);
 const isLoading = ref(false);

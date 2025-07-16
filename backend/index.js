@@ -34,6 +34,7 @@ function runOnce(url, options) {
   })
 }
 
+// FUTURE: I don't need to run this since I am using lighthouse-stream
 app.post("/run-lighthouse", async (req, res) => {
   const {
     mode,

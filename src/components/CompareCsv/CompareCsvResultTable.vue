@@ -22,9 +22,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="border-b border-gray-100 hover:bg-[#fff7d1] cursor-pointer">
-            <td v-for="(metricVal, index) in Object.values(result.data[0])" :key="index"
-              class="py-3 px-4 font-medium text-gray-900">
+          <tr v-for="(row, rowIndex) in result.data" :key="rowIndex" class="border-b border-gray-100 hover:bg-[#fff7d1] cursor-pointer">
+            <td v-for="(metricVal, index) in Object.values(row)" :key="index" class="py-3 px-4 font-medium text-gray-900">
               {{ metricVal }}
             </td>
           </tr>
